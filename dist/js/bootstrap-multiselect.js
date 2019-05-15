@@ -928,6 +928,48 @@
         },
 
         /**
+         * Return an option string using the given select option.
+         *
+         * @param {jQuery} element
+         */
+        createOptionValueString: function(element) {
+            var value = this.escapeHtml(element.value);
+            var title = this.escapeHtml(element.text);
+            var selected = element.selected;
+            var inputType = this.options.multiple ? "checkbox" : "radio";
+             
+            var checkbox = '<input type="' + inputType + '" value="' + value + (selected ? '" checked>' : '">');
+            var label = '<label class="' + inputType + '" title="' + title + '">' + checkbox + " " + title + "</label>";
+            
+            var liClass = (selected && this.options.selectedClass ? ' class="' + this.options.selectedClass + '"' : '');
+            var li = '<li' + liClass + '><a tabindex="0">' + label + '</a></li>';
+            
+            // TODO: Implement: element.disabled check
+            
+            return li;
+        },
+
+        /**
+         * Escapes a string for use in HTML
+         *
+         * @param {String} value
+         * @returns {String}
+         */
+        escapeHtml: function(s) {
+            var ESC_MAP = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+                };
+            
+            return s.replace(/[&<>'"]/g, function(c) {
+                return ESC_MAP[c];
+            });
+        },
+
+        /**
          * Creates a divider using the given select option.
          *
          * @param {jQuery} element
