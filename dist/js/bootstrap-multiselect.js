@@ -545,33 +545,33 @@
          */
         buildDropdownOptions: function() {
 
+            var listOptions = [];
             this.$select.children().each($.proxy(function(index, element) {
-
-                var $element = $(element);
+                
                 // Support optgroups and options without a group simultaneously.
-                var tag = $element.prop('tagName')
-                    .toLowerCase();
+                var tag = element.tagName;
 
-                if ($element.prop('value') === this.options.selectAllValue) {
+                if (element.value === this.options.selectAllValue) {
                     return;
                 }
 
-                if (tag === 'optgroup') {
-                    this.createOptgroup(element);
+                if (tag === 'OPTGROUP') {
+                    listOptions.push.apply(listOptions, this.createOptgroup(element));
                 }
-                else if (tag === 'option') {
-
-                    if ($element.data('role') === 'divider') {
-                        this.createDivider();
-                    }
-                    else {
-                        this.createOptionValue(element);
-                    }
+                else if (tag === 'OPTION') {
+                    // TODO (if dividers required): Enable and add divider to listOptions 
+                    //if (element.getAttribute('data-role') === 'divider') {
+                    //    this.createDivider();
+                    //}
+                    //else {
+                        listOptions.push(this.createOptionValueString(element));
+                    //}
 
                 }
 
                 // Other illegal tags will be ignored.
             }, this));
+            this.$ul[0].innerHTML += listOptions.join('');
 
             // Bind the change event on the dropdown elements.
             $(this.$ul).off('change', 'li:not(.multiselect-group) input[type="checkbox"], li:not(.multiselect-group) input[type="radio"]');
@@ -1011,11 +1011,14 @@
                 $li.addClass('disabled');
             }
 
-            this.$ul.append($li);
+            // TODO: Optimize above
+            var optGroupOptions = [$li[0].outerHTML];
 
             $("option", group).each($.proxy(function($, group) {
-                this.createOptionValue(group);
+                optGroupOptions.push(this.createOptionValueString(group));
             }, this))
+
+            return optGroupOptions;
         },
 
         /**
