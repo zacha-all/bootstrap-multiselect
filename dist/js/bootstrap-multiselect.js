@@ -941,8 +941,12 @@
             var checkbox = '<input type="' + inputType + '" value="' + value + (selected ? '" checked>' : '">');
             var label = '<label class="' + inputType + '" title="' + title + '">' + checkbox + " " + title + "</label>";
             
-            var liClass = (selected && this.options.selectedClass ? ' class="' + this.options.selectedClass + '"' : '');
-            var li = '<li' + liClass + '><a tabindex="0">' + label + '</a></li>';
+            var liClass = (selected && this.options.selectedClass ? this.options.selectedClass + ' ' : '');
+            // Collapse
+            if (this.options.collapseOptGroupsByDefault && $(element).parent().prop("tagName").toLowerCase() === "optgroup") {
+                liClass = liClass+" multiselect-collapsible-hidden";
+            }
+            var li = '<li class="' + liClass + '"><a tabindex="0">' + label + '</a></li>';
             
             // TODO: Implement: element.disabled check
             
